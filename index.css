@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #6A1B9A;
+  --color-secondary: #D4AF37;
+  --color-primary-dark: #4A148C;
+  --color-secondary-light: #F9E79F;
+}
+
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900 font-sans;
+  }
+}
+
+.card-shadow {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.golden-gradient {
+  background: linear-gradient(135deg, #D4AF37 0%, #F9E79F 100%);
+}
+
+.purple-gradient {
+  background: linear-gradient(135deg, #6A1B9A 0%, #8E24AA 100%);
+}

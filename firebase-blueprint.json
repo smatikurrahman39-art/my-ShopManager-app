@@ -1,0 +1,64 @@
+{
+  "entities": {
+    "Shop": {
+      "title": "Shop",
+      "description": "The shop profile for a user.",
+      "type": "object",
+      "properties": {
+        "shopName": { "type": "string", "description": "Name of the shop." },
+        "ownerName": { "type": "string", "description": "Name of the shop owner." },
+        "shopAddress": { "type": "string", "description": "Address of the shop." },
+        "shopType": { "type": "string", "description": "Type of shop (e.g., Grocery)." },
+        "shopPhoto": { "type": "string", "description": "Base64 encoded logo." },
+        "phoneNumber": { "type": "string", "description": "Phone number used for login." },
+        "isSetup": { "type": "boolean", "description": "Whether the shop profile is setup." }
+      },
+      "required": ["shopName", "ownerName", "isSetup"]
+    },
+    "Customer": {
+      "title": "Customer",
+      "description": "A customer of the shop.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Customer name." },
+        "phone": { "type": "string", "description": "Customer phone number." },
+        "address": { "type": "string", "description": "Customer address." },
+        "photo": { "type": "string", "description": "Base64 encoded photo." },
+        "totalBalance": { "type": "number", "description": "Current balance." }
+      },
+      "required": ["name", "phone", "totalBalance"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "A financial transaction for a customer.",
+      "type": "object",
+      "properties": {
+        "amount": { "type": "number", "description": "Transaction amount." },
+        "type": { "type": "string", "enum": ["cash-in", "cash-out"] },
+        "date": { "type": "string", "format": "date-time" },
+        "note": { "type": "string", "description": "Transaction note." }
+      },
+      "required": ["amount", "type", "date"]
+    }
+  },
+  "firestore": {
+    "/shops/{shopId}": {
+      "schema": "Shop",
+      "description": "Shop profile document."
+    },
+    "/shops/{shopId}/customers/{customerId}": {
+      "schema": "Customer",
+      "description": "Customer document."
+    },
+    "/shops/{shopId}/customers/{customerId}/transactions/{transactionId}": {
+      "schema": "Transaction",
+      "description": "Transaction document."
+    },
+    "/backups/{userId}": {
+      "description": "User backup metadata."
+    },
+    "/backups/{userId}/data/{partId}": {
+      "description": "User backup data parts (customers, products, etc.) to avoid 1MB limit."
+    }
+  }
+}

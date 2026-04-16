@@ -1,0 +1,5 @@
+{
+  "name": "Shop Manager",
+  "description": "A professional digital account book for managing shop transactions and customer credit.",
+  "requestFramePermissions": ["publickey-credentials-create", "publickey-credentials-get"]
+}

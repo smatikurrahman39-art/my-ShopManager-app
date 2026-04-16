@@ -1,0 +1,54 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    function isOwner(shopId) {
+      return isAuthenticated() && request.auth.uid == shopId;
+    }
+    function isValidShop(data) {
+      return data.shopName is string && data.shopName.size() > 0 && data.shopName.size() < 100 &&
+             data.ownerName is string && data.ownerName.size() > 0 && data.ownerName.size() < 100 &&
+             data.isSetup is bool;
+    }
+    function isValidCustomer(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
+             data.phone is string && data.phone.size() > 0 && data.phone.size() < 20 &&
+             data.totalBalance is number;
+    }
+    function isValidTransaction(data) {
+      return data.amount is number && data.amount >= 0 &&
+             data.type in ['cash-in', 'cash-out'] &&
+             data.date is string;
+    }
+
+    match /backups/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      match /data/{partId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+
+    match /shops/{shopId} {
+      allow read: if isOwner(shopId);
+      allow create: if isOwner(shopId) && isValidShop(request.resource.data);
+      allow update: if isOwner(shopId) && isValidShop(request.resource.data);
+      
+      match /customers/{customerId} {
+        allow read: if isOwner(shopId);
+        allow create: if isOwner(shopId) && isValidCustomer(request.resource.data);
+        allow update: if isOwner(shopId) && isValidCustomer(request.resource.data);
+        allow delete: if isOwner(shopId);
+        
+        match /transactions/{transactionId} {
+          allow read: if isOwner(shopId);
+          allow create: if isOwner(shopId) && isValidTransaction(request.resource.data);
+          allow update: if isOwner(shopId) && isValidTransaction(request.resource.data);
+          allow delete: if isOwner(shopId);
+        }
+      }
+    }
+  }
+}
